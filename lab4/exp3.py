@@ -10,4 +10,9 @@ green_curr = np.array([(3265+3287)/2, (1652+1663)/2, (1007+1011)/2, (521+524)/2,
 red_v = np.array([0, -100, -200, -300, -350, -355, -360, -361, 0, 100, 200, 250]) # mV
 red_curr = np.array([(819+823)/2, (379+393)/2, (112+123)/2, (14+18)/2, (3+7)/2, (3+10)/2, (0+3)/2, (0+3)/2, (849+852)/2, (1370+1377)/2, (1953+1957)/2, (2241+2244)/2]) # nA
 
+# linear fit for each LED
+blue_coef = np.polyfit(blue_curr, blue_v, 1) 
+blue_lin_func = np.poly1d(blue_coef)
+blue_yfit = blue_lin_func(blue_curr)
+
 
