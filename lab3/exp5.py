@@ -27,6 +27,10 @@ miss_222 = d_222 / a_222
 err_miss_222 = miss_222 * math.sqrt(((err_a_222/a_222) ** 2) + ((err_d_222/d_222) ** 2))
 print(f"Slit thickness: {a_222:.6f} +/- {err_a_222}, center-to-center slit seperations: {d_222:.6f} +/- {err_d_222}, missing orders: {miss_222:.6f} +/- {err_miss_222}")
 
+a_acc_222 = 2 * 0.04393 * 0.1 # cm
+d_acc_222 = (a_acc_222 / 2) + 2 * 0.04393 * 0.1 # cm
+print(f"Accepted slit thickness: {a_acc_222}; center-to-center sep: {d_acc_222}")
+
 # 2/1/2 analysis
 d_212 = (wl * L * 2 * 1)  / th_fine_212
 err_d_212 = d_212 * math.sqrt(((0.05/L) ** 2) + ((0.05/th_fine_212) ** 2))
@@ -35,6 +39,10 @@ err_a_212 = a_212 * math.sqrt(((0.05/L) ** 2) + ((0.05/th_env_212) ** 2))
 miss_212 = d_212 / a_212 
 err_miss_212 = miss_212 * math.sqrt(((err_a_212/a_212) ** 2) + ((err_d_212/d_212) ** 2))
 print(f"Slit thickness: {a_212} +/- {err_a_212}, center-to-center slit seperations: {d_212} +/- {err_d_212}, missing orders: {miss_212} +/- {err_miss_212}")
+
+a_acc_212 = 1 * 0.04393 * 0.1 # cm
+d_acc_212 = (a_acc_212 / 2) + 2 * 0.04393 * 0.1 # cm
+print(f"Accepted slit thickness: {a_acc_212}; center-to-center sep: {d_acc_212}")
 
 
 
