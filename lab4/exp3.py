@@ -26,10 +26,13 @@ red_coef = np.polyfit(red_curr, red_v, 1)
 
 # KEmax = hc / wl - phi rough plot/fit
 ke_max = np.array([blue_coef[0], green_coef[0], red_coef[0]])
-freq = c / (np.array([blue_wl, green_wl, red_wl]) * e-9)
+wls = np.array([blue_wl, green_wl, red_wl]) * 1e-9
+freq = c / wls
 photoelec_coef = np.polyfit(freq, ke_max, 1)
 photoelec_lin_func = np.poly1d(photoelec_coef)
 photoelec_yfit = photoelec_lin_func(freq)
+
+f_cutoff = -1 * photoelec_coef[1] / photoelec_coef[0]
 
 fig = plt.figure()
 plt.title("Photoelectric fit")
@@ -39,7 +42,21 @@ plt.ylabel("KEmax [eV]")
 plt.errorbar(freq, ke_max, fmt=".")
 plt.plot(freq, photoelec_yfit, label="idk")
 
-print(f"Plank's const: {-1 * photoelec_coef[0]} eV*s; work func: {photoelec_coef[1]} eV")
+print(f"Plank's const: {-1 * photoelec_coef[0]} eV*s; work func: {photoelec_coef[1]} eV; cutoff frequency: {f_cutoff} Hz")
+
+# more careful analysis
+ke_err = np.array([0.009, 0.003, 0.001]) # found through looking at eV steps around I=0 value
+freq_err = (c / (wls ** 2)) * wl_err
+degree = 1
+weights = 1 / ke_err
+coef, cov = np.polyfit(freq, ke_max, degree, w=weights, cov=True)
+h = coef[0]
+phi = coef[1]
+h_err = np.sqrt(cov[0, 0])
+phi_err = np.sqrt(cov[1, 1])
+freq_cutoff = phi / h
+freq_cutoff_err = freq_cutoff * np.sqrt((phi_err / phi) ** 2 + (h_err / h) ** 2)
+print(f"plank's const: {h} +/- {h_err} eV * s; work func: {phi} +/- {phi_err} eV; cutoff frequency: {freq_cutoff} +/- {freq_cutoff_err} Hz")  
 
 plt.legend()
 plt.show()
