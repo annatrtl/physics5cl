@@ -54,9 +54,10 @@ plt.errorbar(freq, ke_rough, fmt=".")
 plt.plot(freq, photoelec_yfit, label="Linear fit")
 
 print("Rough calc")
+print(f"Stopping voltages: {ke_rough}")
 print(f"h: {photoelec_coef[0]:.3e} eV*s")
 print(f"phi: {-1 * photoelec_coef[1]:.5f} eV")
-print(f"f0: {f_cutoff:.5f} Hz")
+print(f"f0: {f_cutoff:.3e} Hz")
 
 # more careful analysis
 ke, ke_err = [], []
@@ -80,9 +81,9 @@ dh, dphi = np.sqrt(np.diag(cov))
 J = np.array([b / m**2, -1 / m])
 df0 = np.sqrt(J @ cov @ J)
 
-print(f"h: {h:.3e} +/- {dh:.2e} eV*s  (accepted 4.136e-15)")
+print(f"h: {h:.3e} +/- {dh:.3e} eV*s  (accepted 4.136e-15)")
 print(f"phi: {phi:.5f} +/- {dphi:.5f} eV")
-print(f"f0: {f0:.5f} +/- {df0:.5f} Hz")
+print(f"f0: {f0:.3e} +/- {df0:.3e} Hz")
 
 fig = plt.figure()
 plt.xlabel("Frequency [Hz]")
