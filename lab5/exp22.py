@@ -44,14 +44,14 @@ Rerr = merr
 chi_sq = np.sum(w*(y-b-m*x)**2)
 dof = len(x) - 1
 
-print(f"R = {R:.4e} ± {Rerr:.2e} m^-1, chi_squared/dof = {chi_sq/dof:.2f}")
+print(f"R = {R:.4e} ± {Rerr:.2e} cm^-1, chi_squared/dof = {chi_sq/dof:.2f}")
 print(f"t = {abs(R-Racc)/Rerr:.2f}, % diff = {100*(R-Racc)/Racc:.2f}%")
 
 # plot
 fig = plt.figure()
-plt.xlabel("1/ni**2")
-plt.ylabel("1/wavelength [1/cm^2]")
-plt.title("")
+plt.xlabel(r'$1/n_i^2$')
+plt.ylabel("1/λ [1/cm]")
+plt.title("Balmer Series of Hydrogen: 1/λ vs 1/nᵢ²")
 plt.errorbar(x, y, yerr=yerror, label="data", fmt=".")
 plt.plot(x, b + m*x, label="weighted fit")
 
