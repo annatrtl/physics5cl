@@ -25,17 +25,11 @@ print(f"Standard deviation: {stdev:.3f}, standard error: {stderr:.3f}")
 # scatter plot
 ni = np.array([5, 4, 3]) # purple, turqouise, red
 dist = np.array([np.mean(purple), np.mean(turq), np.mean(red)])
-wls = d * dist / np.sqrt(dist ** 2 + L ** 2)
-wlserr = d*L**2/(dist**2 + L**2)**1.5 * stderr
-
-fig = plt.figure()
-plt.xlabel("1/wavelength [1/cm]")
-plt.ylabel("1/ni**2")
-plt.title("")
-plt.errorbar(1/wls, 1/(ni**2), xerr=stderr, label="", fmt=".")
+wls = d * dist / np.sqrt(dist ** 2 + L1 ** 2)
+wlserr = d*L1**2/(dist**2 + L1**2)**1.5 * stderr
 
 # linear regression
-Racc = 1.097e7
+Racc = 1.097e5 # 1/cm
 b = Racc / 4
 x = 1/ni**2
 y = 1/wls
@@ -50,10 +44,16 @@ Rerr = merr
 chi_sq = np.sum(w*(y-b-m*x)**2)
 dof = len(x) - 1
 
-print(f"R = {R:.4e} ± {sR:.2e} m^-1, chi2/dof = {chi2/dof:.2f}")
-print(f"t = {abs(R-R_acc)/sR:.2f}, % diff = {100*(R-R_acc)/R_acc:.2f}%")
+print(f"R = {R:.4e} ± {Rerr:.2e} m^-1, chi_squared/dof = {chi_sq/dof:.2f}")
+print(f"t = {abs(R-Racc)/Rerr:.2f}, % diff = {100*(R-Racc)/Racc:.2f}%")
 
-plt.plot(x, y, yerr=yerror)
+# plot
+fig = plt.figure()
+plt.xlabel("1/ni**2")
+plt.ylabel("1/wavelength [1/cm^2]")
+plt.title("")
+plt.errorbar(x, y, yerr=yerror, label="data", fmt=".")
+plt.plot(x, b + m*x, label="weighted fit")
 
 plt.legend()
 plt.show()
