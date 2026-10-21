@@ -2,37 +2,58 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 
-# data
+# data - exp1
+d3 = np.array([12.20, 12.55, 12.60, 11.90, 12.20*36.40/36.60, 12.25*36.40/36.60]) # cm
+
+L = 36.40 # cm
+thickness = 0.25 # cm
+d = 1/5000
+
+# data - exp2
 purple = np.array([12.60, 12.55]) # cm
 turq = np.array([14.05, 14.05]) # cm
 red = np.array([19.85, 19.45]) # cm
 
-L = 52.10 # cm
-thickness = 0.25 # cm
-d = 1/5000
+L1 = 52.10 # cm
 
-# rough wavelengths
-rough_p_wl0 = d * (purple[0]/math.sqrt(purple[0] ** 2 + L ** 2))
-rough_p_wl1 = d * (purple[1]/math.sqrt(purple[1] ** 2 + L ** 2))
+# standard deviation & standard error
+mean = np.mean(d3)
+stdev = np.sqrt(np.sum((d3 - mean) ** 2) / (len(d3) - 1))
+stderr = stdev / math.sqrt(len(d3))
+print(f"Standard deviation: {stdev:.3f}, standard error: {stderr:.3f}")
 
-rough_t_wl0 = d * (turq[0]/math.sqrt(turq[0] ** 2 + L ** 2))
-rough_t_wl1 = d * (turq[1]/math.sqrt(turq[1] ** 2 + L ** 2))
+# scatter plot
+ni = np.array([5, 4, 3]) # purple, turqouise, red
+dist = np.array([np.mean(purple), np.mean(turq), np.mean(red)])
+wls = d * dist / np.sqrt(dist ** 2 + L ** 2)
+wlserr = d*L**2/(dist**2 + L**2)**1.5 * stderr
 
-rough_r_wl0 = d * (red[0]/math.sqrt(red[0] ** 2 + L ** 2))
-rough_r_wl1 = d * (red[1]/math.sqrt(red[1] ** 2 + L ** 2))
+fig = plt.figure()
+plt.xlabel("1/wavelength [1/cm]")
+plt.ylabel("1/ni**2")
+plt.title("")
+plt.errorbar(1/wls, 1/(ni**2), xerr=stderr, label="", fmt=".")
 
-print(f"Wavelengths without uncertainty --> purple: {rough_p_wl0 * 1e7:.3f} nm and {rough_p_wl1 * 1e7:.3f} nm, turquoise: {rough_t_wl0 * 1e7:.3f} nm and {rough_t_wl1 * 1e7:.3f} nm, red: {rough_r_wl0 * 1e7:.3f} nm and {rough_r_wl1 * 1e7:.3f} nm")
+# linear regression
+Racc = 1.097e7
+b = Racc / 4
+x = 1/ni**2
+y = 1/wls
+yerror = wlserr / wls ** 2
+w = 1 / yerror ** 2
 
-# predicted wavelengths w/ Rydberg formula
-R = 1.097e7
-pred_p_wl = ((R * (1/(2**2) - 1/(5**2))) ** -1) * 1e9 # nm
+m = np.sum(w*x*(y-b)) / np.sum(w*x**2)
+merr=  1 / np.sqrt(np.sum(w*x**2))
+R = -m
+Rerr = merr
 
-pred_t_wl = ((R * (1/(2**2) - 1/(4**2))) ** -1) * 1e9 # nm
+chi_sq = np.sum(w*(y-b-m*x)**2)
+dof = len(x) - 1
 
-pred_r_wl = ((R * (1/(2**2) - 1/(3**2))) ** -1) * 1e9 # nm
+print(f"R = {R:.4e} ± {sR:.2e} m^-1, chi2/dof = {chi2/dof:.2f}")
+print(f"t = {abs(R-R_acc)/sR:.2f}, % diff = {100*(R-R_acc)/R_acc:.2f}%")
 
-print(f"Predicted wavelengths w/ Rydberg --> purple: {pred_p_wl:.3f} nm, turquoise: {pred_t_wl:.3f} nm, red: {pred_r_wl:.3f} nm") 
+plt.plot(x, y, yerr=yerror)
 
-
-
-
+plt.legend()
+plt.show()
