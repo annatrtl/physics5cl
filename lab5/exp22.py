@@ -14,6 +14,14 @@ purple = np.array([12.60, 12.55]) # cm
 turq = np.array([14.05, 14.05]) # cm
 red = np.array([19.85, 19.45]) # cm
 
+# pink data
+screen_pink_purple_dist = 5.0 # cm
+screen_purple_blue_dist = 0.7 # cm
+screen_blue_red_dist = 2.3 # cm
+
+convers = np.mean([(red[0]-turq[0])/screen_blue_red_dist, (red[1]-turq[1])/screen_blue_red_dist, (turq[0]-purple[0])/screen_purple_blue_dist, (turq[1]-purple[1])/screen_purple_blue_dist])
+pink = convers * screen_pink_purple_dist 
+
 L1 = 52.10 # cm
 
 # standard deviation & standard error
@@ -23,8 +31,8 @@ stderr = stdev / math.sqrt(len(d3))
 print(f"Standard deviation: {stdev:.3f}, standard error: {stderr:.3f}")
 
 # scatter plot
-ni = np.array([5, 4, 3]) # purple, turqouise, red
-dist = np.array([np.mean(purple), np.mean(turq), np.mean(red)])
+ni = np.array([6, 5, 4, 3]) # purple, turqouise, red
+dist = np.array([pink, np.mean(purple), np.mean(turq), np.mean(red)])
 wls = d * dist / np.sqrt(dist ** 2 + L1 ** 2)
 wlserr = d*L1**2/(dist**2 + L1**2)**1.5 * stderr
 
